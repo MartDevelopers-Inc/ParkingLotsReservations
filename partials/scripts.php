@@ -9,3 +9,7 @@
 <!-- App js -->
 <script src="../public/js/jquery.core.js"></script>
 <script src="../public/js/jquery.app.js"></script>
+
+<!-- Sweet Alerts -->
+<script src="../public/plugins/sweetalerts/sweetalert2.min.js"></script>
+<script src="../public/plugins/sweetalerts/custom-sweetalert.js"></script>
