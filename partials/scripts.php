@@ -13,3 +13,7 @@
 <!-- Sweet Alerts -->
 <script src="../public/plugins/sweetalerts/sweetalert2.min.js"></script>
 <script src="../public/plugins/sweetalerts/custom-sweetalert.js"></script>
+
+<!-- Counter Up  -->
+<script src="../public/plugins/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="../public/plugins/counterup/jquery.counterup.js"></script>

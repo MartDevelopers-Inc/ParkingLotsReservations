@@ -21,12 +21,11 @@
 
     <!-- Modernizr js -->
     <script src="../public/js/modernizr.min.js"></script>
+    
 
     <!-- Sweet Alerts -->
     <link href="../public/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="../public/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
-
-
     <!-- Init Swal -->
     <?php if (isset($success)) { ?>
         <!--This code for injecting success alert-->
