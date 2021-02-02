@@ -1,4 +1,23 @@
 <?php
+session_start();
+include('../config/config.php');
+
+if (isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = sha1(md5($_POST['password'])); //double encrypt to increase security
+    $stmt = $mysqli->prepare("SELECT email, password, id  FROM admin  WHERE email =? AND password =?");
+    $stmt->bind_param('ss', $email, $password); //bind fetched parameters
+    $stmt->execute(); //execute bind 
+    $stmt->bind_result($email, $password, $id); //bind result
+    $rs = $stmt->fetch();
+    $_SESSION['id'] = $id;
+    if ($rs) {
+        header("location:dashboard.php");
+    } else {
+        $err = "Access Denied Please Check Your Credentials";
+    }
+}
+
 require_once('../partials/head.php');
 ?>
 
@@ -7,13 +26,11 @@ require_once('../partials/head.php');
     <div class="account-pages"></div>
     <div class="clearfix"></div>
     <div class="wrapper-page">
-
         <div class="account-bg">
             <div class="card-box mb-0">
                 <div class="text-center m-t-20">
-                    <a href="index.html" class="logo">
-                        <i class="zmdi zmdi-group-work icon-c-logo"></i>
-                        <span>Uplon</span>
+                    <a href="index.php" class="logo">
+                        <span>Parking Lots Reservations </span>
                     </a>
                 </div>
                 <div class="m-t-10 p-20">
@@ -22,17 +39,16 @@ require_once('../partials/head.php');
                             <h6 class="text-muted text-uppercase m-b-0 m-t-0">Sign In</h6>
                         </div>
                     </div>
-                    <form class="m-t-20" action="index.html">
-
+                    <form method="POST" class="m-t-20">
                         <div class="form-group row">
                             <div class="col-12">
-                                <input class="form-control" type="text" required="" placeholder="Username">
+                                <input class="form-control" type="email" name="email" required="required" placeholder="Email">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <div class="col-12">
-                                <input class="form-control" type="password" required="" placeholder="Password">
+                                <input class="form-control" type="password" name="password" required="required" placeholder="Password">
                             </div>
                         </div>
 
@@ -49,50 +65,22 @@ require_once('../partials/head.php');
 
                         <div class="form-group text-center row m-t-10">
                             <div class="col-12">
-                                <button class="btn btn-success btn-block waves-effect waves-light" type="submit">Log In</button>
+                                <button class="btn btn-success btn-block waves-effect waves-light" name="login" type="submit">Log In</button>
                             </div>
                         </div>
 
                         <div class="form-group row m-t-30 mb-0">
                             <div class="col-12">
-                                <a href="pages-recoverpw.html" class="text-muted"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
+                                <a href="reset_password.php" class="text-muted"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
                             </div>
                         </div>
 
-                        <div class="form-group row m-t-30 mb-0">
-                            <div class="col-12 text-center">
-                                <h5 class="text-muted"><b>Sign in with</b></h5>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0 text-center">
-                            <div class="col-12">
-                                <button type="button" class="btn btn-facebook waves-effect font-14 waves-light m-t-20">
-                                    <i class="fa fa-facebook m-r-5"></i> Facebook
-                                </button>
-
-                                <button type="button" class="btn btn-twitter waves-effect font-14 waves-light m-t-20">
-                                    <i class="fa fa-twitter m-r-5"></i> Twitter
-                                </button>
-
-                                <button type="button" class="btn btn-googleplus waves-effect font-14 waves-light m-t-20">
-                                    <i class="fa fa-google-plus m-r-5"></i> Google+
-                                </button>
-                            </div>
-                        </div>
 
                     </form>
 
                 </div>
 
                 <div class="clearfix"></div>
-            </div>
-        </div>
-        <!-- end card-box-->
-
-        <div class="m-t-20">
-            <div class="text-center">
-                <p class="text-white">Don't have an account? <a href="pages-register.html" class="text-white m-l-5"><b>Sign Up</b></a></p>
             </div>
         </div>
 
