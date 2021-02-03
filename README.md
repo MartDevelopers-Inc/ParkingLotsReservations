@@ -12,5 +12,4 @@ Instilling innovation and automation in Parking Lots Reservations.
 
 
 ## License
-
-The KEA Hotel ERP is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+ ParkingLotsReservations is an open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
