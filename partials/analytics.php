@@ -11,7 +11,7 @@ $stmt->close();
 $query = "SELECT SUM(amt)  FROM `payments`  ";
 $stmt = $mysqli->prepare($query);
 $stmt->execute();
-$stmt->bind_result($redervations_revenue);
+$stmt->bind_result($reservations_revenue);
 $stmt->fetch();
 $stmt->close();
 

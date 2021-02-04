@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('../config/config.php');
+include_once('../partials/analytics.php');
 require_once('../partials/head.php');
 ?>
 
