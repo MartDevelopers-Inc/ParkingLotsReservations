@@ -21,7 +21,16 @@
 
     <!-- Modernizr js -->
     <script src="../public/js/modernizr.min.js"></script>
-    
+
+    <!-- DataTables -->
+    <link href="../public/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <link href="../puclic/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Responsive datatable examples -->
+    <link href="../public/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Multi Item Selection examples -->
+    <link href="../public/plugins/datatables/select.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
     <!-- Sweet Alerts -->
     <link href="../public/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
