@@ -72,3 +72,7 @@
             .appendTo('#datatable-buttons_wrapper .col-md-6:eq(0)');
     });
 </script>
+
+<!-- Modal-Effect -->
+<script src="../public/plugins/custombox/js/custombox.min.js"></script>
+<script src="../public/plugins/custombox/js/custombox.legacy.min.js"></script>

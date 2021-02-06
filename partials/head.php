@@ -32,6 +32,9 @@
     <!-- Multi Item Selection examples -->
     <link href="../public/plugins/datatables/select.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
+    <!-- Custom box css -->
+    <link href="../public/plugins/custombox/css/custombox.min.css" rel="stylesheet">
+
     <!-- Sweet Alerts -->
     <link href="../public/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="../public/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />

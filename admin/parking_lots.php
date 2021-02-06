@@ -1,6 +1,85 @@
 <?php
 session_start();
 include('../config/config.php');
+include('../config/codeGen.php');
+/* Add Parking Slots */
+if (isset($_POST['add_parkinglots'])) {
+    //Error Handling and prevention of posting double entries
+    $error = 0;
+
+    if (isset($_POST['id']) && !empty($_POST['id'])) {
+        $id = mysqli_real_escape_string($mysqli, trim($_POST['id']));
+    } else {
+        $error = 1;
+        $err = 'ID Cannot Be Empty';
+    }
+
+    if (isset($_POST['code']) && !empty($_POST['code'])) {
+        $code = mysqli_real_escape_string($mysqli, trim($_POST['code']));
+    } else {
+        $error = 1;
+        $err = 'Parking Slot Code Cannot Be Empty';
+    }
+
+    if (isset($_POST['location']) && !empty($_POST['location'])) {
+        $location = mysqli_real_escape_string($mysqli, trim($_POST['location']));
+    } else {
+        $error = 1;
+        $err = 'Parking Lot Location Name Cannot Be Empty';
+    }
+
+    if (isset($_POST['parking_slots']) && !empty($_POST['parking_slots'])) {
+        $parking_slots = mysqli_real_escape_string($mysqli, trim($_POST['parking_slots']));
+    } else {
+        $error = 1;
+        $err = 'Parking Slots  Cannot Be Empty';
+    }
+
+    if (isset($_POST['price_per_slot']) && !empty($_POST['price_per_slot'])) {
+        $price_per_slot = mysqli_real_escape_string($mysqli, trim($_POST['price_per_slot']));
+    } else {
+        $error = 1;
+        $err = 'Price Per Slot  Cannot Be Empty';
+    }
+
+
+    if (!$error) {
+        //prevent Double entries
+        $sql = "SELECT * FROM  parking_lots WHERE  code='$code'";
+        $res = mysqli_query($mysqli, $sql);
+        if (mysqli_num_rows($res) > 0) {
+            $row = mysqli_fetch_assoc($res);
+            if (
+                $code = $row['code']
+            ) {
+                $err =  "Parking Lot With That Code Already Exists ";
+            } else {
+            }
+        } else {
+
+            $query = 'INSERT INTO parking_lots (id, code, location, parking_slots, price_per_slot) VALUES(?,?,?,?,?)';
+            $stmt = $mysqli->prepare($query);
+            $rc = $stmt->bind_param(
+                'sssss',
+                $id,
+                $code,
+                $location,
+                $parking_slots,
+                $price_per_slot
+            );
+            $stmt->execute();
+            if ($stmt) {
+                $success =
+                    'Parking Lot Added' && header('refresh:1; url=parking_lots.php');
+            } else {
+                $info = 'Please Try Again Or Try Later';
+            }
+        }
+    }
+}
+
+/* Update Slots */
+/* Delete Slots */
 require_once("../partials/head.php");
 ?>
 
@@ -22,11 +101,51 @@ require_once("../partials/head.php");
                 <div class="col-sm-12">
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
+                            <a href="#add_modal" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Parking Lots</a>
                         </div>
                         <h4 class="page-title">Parking Lots</h4>
                     </div>
                 </div>
             </div>
+            <!-- Add
+             Parking Lot Modal -->
+            <div id="add_modal" class="modal-demo">
+                <button type="button" class="close" onclick="Custombox.modal.close();">
+                    <span>&times;</span><span class="sr-only">Close</span>
+                </button>
+                <h4 class="custom-modal-title">Fill All Required Fields</h4>
+                <div class="custom-modal-text">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Hide This -->
+                                <input type="hidden" required name="id" value="<?php echo $ID; ?>" class="form-control">
+                                <div class="form-group col-md-6">
+                                    <label for="">Parking Lot Code Number</label>
+                                    <input type="text" required name="code" value="<?php echo $a; ?>-<?php echo $b; ?>" class="form-control">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="">Parking Lot Location</label>
+                                    <input type="text" required name="location" value="" class="form-control">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="">Parking Slots Available</label>
+                                    <input type="text" required name="parking_slots" class="form-control">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="">Parking Price Per Slot Per Hour</label>
+                                    <input type="text" required name="price_per_slot" class="form-control">
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" name="add_parkinglots" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- End Modal -->
+
             <!-- end row -->
             <div class="row">
                 <div class="col-12">
@@ -37,22 +156,34 @@ require_once("../partials/head.php");
                                     <th>Code Number</th>
                                     <th>Parking Lot Location</th>
                                     <th>Parking Slots</th>
-                                    <th>Proce Per Slot</th>
+                                    <th>Price Per Slot</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
 
 
                             <tbody>
-                                <tr>
-                                    <td><?php echo $parking->code;?></td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>61</td>
-                                    <td>
+                                <?php
+                                $ret = 'SELECT * FROM `parking_lots` ';
+                                $stmt = $mysqli->prepare($ret);
+                                $stmt->execute(); //ok
+                                $res = $stmt->get_result();
+                                while ($parking = $res->fetch_object()) { ?>
+                                    <tr>
+                                        <td><?php echo $parking->code; ?></td>
+                                        <td><?php echo $parking->location; ?></td>
+                                        <td><?php echo $parking->parking_slots; ?></td>
+                                        <td><?php echo $parking->price_per_slot; ?></td>
+                                        <td>
+                                            <a href="#update-<?php echo $parking->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
+                                            <!-- Update Modal -->
+                                            <a href="#delete-<?php echo $parking->id; ?>" data-toggle="modal" class="badge bg-danger">Delete</a>
+                                            <!-- Delete Modal -->
 
-                                    </td>
-                                </tr>
+
+                                        </td>
+                                    </tr>
+                                <?php } ?>
 
                             </tbody>
                         </table>
