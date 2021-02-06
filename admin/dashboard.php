@@ -61,7 +61,7 @@ require_once('../partials/head.php');
 
 
             <div class="row">
-                <div class="col-xl-6">
+                <div class="col-xl-12">
                     <div class="card-box">
                         <h4 class="header-title m-t-0 m-b-30">Recent Reservations</h4>
                         <div class="table-responsive">
@@ -77,22 +77,29 @@ require_once('../partials/head.php');
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th class="text-muted">Apple Technology</th>
-                                        <td>20/02/2014</td>
-                                        <td>19/02/2020</td>
-                                        <td><span class="badge badge-success">Paid</span></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+                                    <?php
+                                    $ret = 'SELECT * FROM `reservations` ';
+                                    $stmt = $mysqli->prepare($ret);
+                                    $stmt->execute(); //ok
+                                    $res = $stmt->get_result();
+                                    while ($resev = $res->fetch_object()) { ?>
+                                        <tr>
+                                            <th class="text-muted"><?php echo $resev->code; ?></th>
+                                            <td><?php echo $resev->client_name; ?></td>
+                                            <td><?php echo $resev->car_regno; ?></td>
+                                            <td><?php echo $resev->lot_number; ?></td>
+                                            <td><?php echo $resev->parking_duration; ?></td>
+                                            <td><?php echo $resev->parking_date; ?></td>
+                                        </tr>
 
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
 
                     </div>
                 </div>
-                <div class="col-xl-6">
+                <div class="col-xl-12">
                     <div class="card-box">
                         <h4 class="header-title m-t-0 m-b-30">Recent Reservation Payment</h4>
                         <div class="table-responsive">
@@ -107,23 +114,27 @@ require_once('../partials/head.php');
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th class="text-muted">Apple Technology</th>
-                                        <td>20/02/2014</td>
-                                        <td>19/02/2020</td>
-                                        <td><span class="badge badge-success">Paid</span></td>
-                                        <th></th>
-                                    </tr>
+                                    <?php
+                                    $ret = 'SELECT * FROM `payments`';
+                                    $stmt = $mysqli->prepare($ret);
+                                    $stmt->execute(); //ok
+                                    $res = $stmt->get_result();
+                                    while ($pay = $res->fetch_object()) { ?>
+                                        <tr>
+                                            <th><span class="badge bg-success"> <?php echo $pay->code; ?> </span></th>
+                                            <td><?php echo $pay->amt; ?></td>
+                                            <td><?php echo $pay->client_name; ?></td>
+                                            <td><?php echo $pay->client_phone; ?></td>
+                                            <td><span class="badge badge-success"><?php echo date('d M Y g:ia', strtotime($pay->created_at)); ?></span></td>
+                                        </tr>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
-
 
         <!-- Footer -->
         <?php require_once("../partials/footer.php"); ?>
