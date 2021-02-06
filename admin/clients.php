@@ -52,7 +52,7 @@ if (isset($_POST['add_client'])) {
 
     if (!$error) {
         //prevent Double entries
-        $sql = "SELECT * FROM  clients WHERE  email='$email' || phone = '$phone";
+        $sql = "SELECT * FROM  clients WHERE  email='$email' || phone = '$phone'";
         $res = mysqli_query($mysqli, $sql);
         if (mysqli_num_rows($res) > 0) {
             $row = mysqli_fetch_assoc($res);
@@ -88,7 +88,7 @@ if (isset($_POST['add_client'])) {
 }
 
 /* Update Clients */
-if (isset($_POST['update_clients'])) {
+if (isset($_POST['update_client'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
@@ -169,7 +169,7 @@ if (isset($_GET['delete'])) {
     if ($stmt) {
         $success = 'Deleted' && header('refresh:1; url=clients.php');
         //inject alert that task failed
-        $info = 'Please Try Again Or Try Later';
+        $info = 'Deleted';
     }
 }
 
@@ -194,7 +194,7 @@ require_once("../partials/head.php");
                 <div class="col-sm-12">
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
-                            <a href="#add_modal" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Parking Lots</a>
+                            <a href="#add_modal" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Client</a>
                         </div>
                         <h4 class="page-title">Clients</h4>
                     </div>
@@ -217,19 +217,19 @@ require_once("../partials/head.php");
                                     <label for="">Name</label>
                                     <input type="text" required name="name" class="form-control">
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="">Phone Number</label>
                                     <input type="text" required name="phone" value="" class="form-control">
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="">Email</label>
                                     <input type="text" required name="email" class="form-control">
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="">Password</label>
                                     <input type="text" required name="password" class="form-control">
                                 </div>
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-6">
                                     <label for="">Car Registration Number</label>
                                     <input type="text" required name="car_regno" class="form-control">
                                 </div>

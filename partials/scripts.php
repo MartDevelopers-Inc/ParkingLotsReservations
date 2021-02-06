@@ -76,3 +76,45 @@
 <!-- Modal-Effect -->
 <script src="../public/plugins/custombox/js/custombox.min.js"></script>
 <script src="../public/plugins/custombox/js/custombox.legacy.min.js"></script>
+
+<!-- Ajaxing -->
+<script>
+    /* Client Details Asyc */
+    function getClientDetails(val) {
+        $.ajax({
+
+            type: "POST",
+            url: "../partials/ajax.php",
+            data: 'Phone=' + val,
+            success: function(data) {
+                //alert(data);
+                $('#Name').val(data);
+            }
+        });
+
+        $.ajax({
+
+            type: "POST",
+            url: "../partials/ajax.php",
+            data: 'Name=' + val,
+            success: function(data) {
+                //alert(data);
+                $('#CarRegno').val(data);
+            }
+        });
+    }
+
+
+    /* Parking Lot Details */
+    function getParkingDetails(val) {
+        $.ajax({
+            type: "POST",
+            url: "../partials/ajax.php",
+            data: 'ParkingLotNumber=' + val,
+            success: function(data) {
+                //alert(data);
+                $('#ParkingFee').val(data);
+            }
+        });
+    }
+</script>
