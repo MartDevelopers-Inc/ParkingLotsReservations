@@ -251,43 +251,53 @@ require_once("../partials/head.php");
                                         <td><?php echo $parking->parking_slots; ?></td>
                                         <td>Ksh <?php echo $parking->price_per_slot; ?></td>
                                         <td>
-                                            <a href="#update-<?php echo $parking->id; ?>" data-toggle="modal" class="badge bg-warning" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100">Update</a>
+                                            <a href="#update-<?php echo $parking->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
                                             <!-- Update Modal -->
-                                            <div id="update-<?php echo $parking->id; ?>" class="modal-demo">
-                                                <button type="button" class="close" onclick="Custombox.modal.close();">
-                                                    <span>&times;</span><span class="sr-only">Close</span>
-                                                </button>
-                                                <h4 class="custom-modal-title">Fill All Required Fields</h4>
-                                                <div class="custom-modal-text">
-                                                    <form method="post" enctype="multipart/form-data">
-                                                        <div class="card-body">
-                                                            <div class="row">
-                                                                <!-- Hide This -->
-                                                                <input type="hidden" required name="id" value="<?php echo $parking->id; ?>" class="form-control">
-                                                                <div class="form-group col-md-6">
-                                                                    <label for="">Parking Lot Code Number</label>
-                                                                    <input type="text" required name="code" value="<?php echo $parking->code; ?>" class="form-control">
-                                                                </div>
-                                                                <div class="form-group col-md-6">
-                                                                    <label for="">Parking Lot Location</label>
-                                                                    <input type="text" required value="<?php echo $parking->location; ?>" name="location" value="" class="form-control">
-                                                                </div>
-                                                                <div class="form-group col-md-6">
-                                                                    <label for="">Parking Slots Available</label>
-                                                                    <input type="text" required value="<?php echo $parking->parking_slots; ?>" name="parking_slots" class="form-control">
-                                                                </div>
-                                                                <div class="form-group col-md-6">
-                                                                    <label for="">Parking Price Per Slot Per Hour</label>
-                                                                    <input type="text" required value="<?php echo $parking->price_per_slot; ?>" name="price_per_slot" class="form-control">
-                                                                </div>
-                                                            </div>
-                                                            <div class="text-right">
-                                                                <button type="submit" name="update_parkinglots" class="btn btn-primary">Submit</button>
-                                                            </div>
+                                            <div class="modal fade" id="update-<?php echo $parking->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Update <?php echo $parking->code; ?></h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
                                                         </div>
-                                                    </form>
+                                                        <div class="modal-body">
+                                                            <form method="post" enctype="multipart/form-data">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <!-- Hide This -->
+                                                                        <input type="hidden" required name="id" value="<?php echo $parking->id; ?>" class="form-control">
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Lot Code Number</label>
+                                                                            <input type="text" required name="code" value="<?php echo $parking->code; ?>" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Lot Location</label>
+                                                                            <input type="text" required value="<?php echo $parking->location; ?>" name="location" value="" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Slots Available</label>
+                                                                            <input type="text" required value="<?php echo $parking->parking_slots; ?>" name="parking_slots" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Price Per Slot Per Hour</label>
+                                                                            <input type="text" required value="<?php echo $parking->price_per_slot; ?>" name="price_per_slot" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-right">
+                                                                        <button type="submit" name="update_parkinglots" class="btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer ">
+                                                            <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+
                                             <a href="#delete-<?php echo $parking->id; ?>" class="badge bg-danger" data-animation="makeway" data-plugin="custommodal" data-overlaySpeed="100">Delete</a>
                                             <!-- Delete Modal -->
                                             <div id="delete-<?php echo $parking->id; ?>" class="modal-demo">
@@ -295,10 +305,10 @@ require_once("../partials/head.php");
                                                     <span>&times;</span><span class="sr-only">Close</span>
                                                 </button>
                                                 <h4 class="custom-modal-title">Confirm Deletion</h4>
-                                                <div class="custom-modal-text">
+                                                <div class="text-center">
                                                     <h4>Delete <?php echo $parking->code; ?> ? </h4>
                                                     <br>
-                                                    <button type="button" class="text-center btn btn-success" data-dismiss="modal">No</button>
+                                                    <button type="button" class="text-center btn btn-success" onclick="Custombox.modal.close();">No</button>
                                                     <a href="parking_lots.php?delete=<?php echo $parking->id; ?>" class="text-center btn btn-danger"> Delete </a>
                                                 </div>
                                             </div>
