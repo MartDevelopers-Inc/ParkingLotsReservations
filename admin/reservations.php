@@ -4,7 +4,7 @@ include('../config/config.php');
 include('../config/codeGen.php');
 
 /* Add Reservations */
-if (isset($_POST['add_rservation'])) {
+if (isset($_POST['add_reservation'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
@@ -81,7 +81,7 @@ if (isset($_POST['add_rservation'])) {
 
     if (!$error) {
         //prevent Double entries
-        $sql = "SELECT * FROM  reservations WHERE  cpde='$code'";
+        $sql = "SELECT * FROM  reservations WHERE  code='$code' ";
         $res = mysqli_query($mysqli, $sql);
         if (mysqli_num_rows($res) > 0) {
             $row = mysqli_fetch_assoc($res);
@@ -120,7 +120,7 @@ if (isset($_POST['add_rservation'])) {
 }
 
 /* Update Client Reservations */
-if (isset($_POST['update_rservation'])) {
+if (isset($_POST['update_reservation'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
@@ -195,7 +195,7 @@ if (isset($_POST['update_rservation'])) {
     }
 
 
-    $query = 'UPDATE reservations SET  code =?, client_name =?, client_phone =?, car_regno=?, lot_number =?, parking_duration =?, parking_date, =? amt =?, status =? WHERE id = ?';
+    $query = 'UPDATE reservations SET  code =?, client_name =?, client_phone =?, car_regno=?, lot_number =?, parking_duration =?, parking_date =?, amt =?, status =? WHERE id = ?';
     $stmt = $mysqli->prepare($query);
     $rc = $stmt->bind_param(
         'ssssssssss',
@@ -218,7 +218,6 @@ if (isset($_POST['update_rservation'])) {
         $info = 'Please Try Again Or Try Later';
     }
 }
-
 
 
 
@@ -277,10 +276,11 @@ require_once("../partials/head.php");
                             <div class="row">
                                 <!-- Hide This -->
                                 <input type="hidden" required name="id" value="<?php echo $ID; ?>" class="form-control">
+                                <input type="hidden" required name="status" value="Pending" class="form-control">
                                 <div class="form-group col-md-12">
                                     <label for="">Client Phone Number</label>
                                     <!-- Ajax Client Phone Number To Get Client Details -->
-                                    <select type="text" onchange="getClientDetails(this.value);" id="Phone"  required  name="client_phone" class="form-control">
+                                    <select type="text" onchange="getClientDetails(this.value);" id="Phone" required name="client_phone" class="form-control">
                                         <option>Select Client Phone Number</option>
                                         <?php
                                         $ret = 'SELECT * FROM `clients` ';
@@ -294,7 +294,7 @@ require_once("../partials/head.php");
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="">Client Name</label>
-                                    <input type="text" id="Name" required name="client_name"  class="form-control">
+                                    <input type="text" id="Name" required name="client_name" class="form-control">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="">Client Car Reg Number</label>
@@ -325,12 +325,12 @@ require_once("../partials/head.php");
                                     <input type="text" required name="amt" id="ParkingFee" class="form-control">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="">Parking Duration</label>
+                                    <label for="">Parking Duration (Hours)</label>
                                     <input type="text" required name="parking_duration" class="form-control">
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="">Parking Date And Time</label>
-                                    <input type="text" value="<?php echo date('d M Y g:ia'); ?>" required name="parking_date " class="form-control">
+                                    <input type="text" value="<?php echo date('d M Y g:ia'); ?>" required name="parking_date" class="form-control">
                                 </div>
 
                             </div>
@@ -352,16 +352,15 @@ require_once("../partials/head.php");
                                 <tr>
                                     <th>Code</th>
                                     <th>Client Name</th>
-                                    <th>Client Phone No</th>
-                                    <th>Client Car Regno</th>
-                                    <th>Parking Lot No</th>
-                                    <th>Parking Fee</th>
+                                    <th>Phone No</th>
+                                    <th>Car Regno</th>
+                                    <th>Lot No</th>
+                                    <th>Fee</th>
                                     <th>Parking Duration</th>
                                     <th>Date Reserved</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-
 
                             <tbody>
                                 <?php
@@ -376,8 +375,8 @@ require_once("../partials/head.php");
                                         <td><?php echo $reserv->client_phone; ?></td>
                                         <td><?php echo $reserv->car_regno; ?></td>
                                         <td><?php echo $reserv->lot_number; ?></td>
-                                        <td><?php echo $reserv->amt; ?></td>
-                                        <td><?php echo $reserv->parking_duration; ?></td>
+                                        <td>Ksh <?php echo $reserv->amt; ?></td>
+                                        <td><?php echo $reserv->parking_duration; ?> Hours</td>
                                         <td><?php echo $reserv->parking_date; ?></td>
                                         <td>
                                             <a href="#update-<?php echo $reserv->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
@@ -386,13 +385,59 @@ require_once("../partials/head.php");
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Update <?php echo $reserv->name; ?> Reservation</h5>
+                                                            <h5 class="modal-title" id="exampleModalLabel">Update <?php echo $reserv->client_name ?> Reservation</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
+                                                            <form method="post" enctype="multipart/form-data">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <!-- Hide This -->
+                                                                        <input type="hidden" required name="id" value="<?php echo $reserv->id; ?>" class="form-control">
+                                                                        <input type="hidden" required name="status" value="Pending" class="form-control">
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Client Phone Number</label>
+                                                                            <input type="text" value="<?php echo $reserv->client_phone; ?>" required name="client_phone" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Client Name</label>
+                                                                            <input type="text" value="<?php echo $reserv->client_name; ?>" required name="client_name" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Client Car Reg Number</label>
+                                                                            <input type="text" required value="<?php echo $reserv->car_regno; ?>" name="car_regno" class="form-control">
+                                                                        </div>
 
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Reservation Code</label>
+                                                                            <input type="text" required name="code" value="<?php echo $reserv->code; ?>" class="form-control">
+                                                                        </div>
+
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Lot Number</label>
+                                                                            <input type="text" required name="lot_number" value="<?php echo $reserv->lot_number; ?>" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Fee</label>
+                                                                            <input type="text" required name="amt" value="<?php echo $reserv->amt; ?>" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Duration (Hours)</label>
+                                                                            <input type="text" required value="<?php echo $reserv->parking_duration; ?>" name="parking_duration" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Date And Time</label>
+                                                                            <input type="text" value="<?php echo date('d M Y g:ia'); ?>" required name="parking_date" class="form-control">
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="text-right">
+                                                                        <button type="submit" name="update_reservation" class="btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                         <div class="modal-footer ">
                                                             <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
