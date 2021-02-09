@@ -350,14 +350,13 @@ require_once("../partials/head.php");
                         <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
                                     <th>Client Name</th>
                                     <th>Phone No</th>
                                     <th>Car Regno</th>
                                     <th>Lot No</th>
                                     <th>Fee</th>
                                     <th>Parking Duration</th>
-                                    <th>Date Reserved</th>
+                                    <th>Date </th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -370,7 +369,6 @@ require_once("../partials/head.php");
                                 $res = $stmt->get_result();
                                 while ($reserv = $res->fetch_object()) { ?>
                                     <tr>
-                                        <td><?php echo $reserv->code; ?></td>
                                         <td><?php echo $reserv->client_name; ?></td>
                                         <td><?php echo $reserv->client_phone; ?></td>
                                         <td><?php echo $reserv->car_regno; ?></td>
@@ -379,6 +377,69 @@ require_once("../partials/head.php");
                                         <td><?php echo $reserv->parking_duration; ?> Hours</td>
                                         <td><?php echo $reserv->parking_date; ?></td>
                                         <td>
+                                            <!-- Only Give Ticket When Reservation Is Paid -->
+                                            <?php
+                                            if ($reserv->status == 'Paid') {
+                                                echo "<a href='#receipt-$reserv->id' data-toggle='modal' class='badge bg-success'>Receipt</a>
+                                                ";
+                                            } else {
+                                                //Nothing
+                                            }
+                                            ?>
+                                            <div class="modal fade" id="receipt-<?php echo $reserv->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-center" id="exampleModalLabel"><?php echo $reserv->client_name ?> Parking Receipt</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="card" id="Print">
+                                                                <div class="card-header text-center">
+                                                                    Parking Receipt
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title text-center"><?php echo $reserv->client_name; ?> - <?php echo $reserv->client_phone; ?></h5>
+                                                                    <p class="card-text">
+                                                                    <table class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Reservation Code</th>
+                                                                                <th>Car Regno</th>
+                                                                                <th>Parking Lot No</th>
+                                                                                <th>Paid Parking Fee</th>
+                                                                                <th>Parking Duration</th>
+                                                                                <th>Date Reserved</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td><?php echo $reserv->code; ?></td>
+                                                                                <td><?php echo $reserv->car_regno; ?></td>
+                                                                                <td><?php echo $reserv->lot_number; ?></td>
+                                                                                <td>Ksh <?php echo $reserv->amt; ?></td>
+                                                                                <td><?php echo $reserv->parking_duration; ?> Hours</td>
+                                                                                <td><?php echo $reserv->parking_date; ?></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="card-footer">
+                                                                    <small class="text-muted">Generated On <?php echo date('d M Y g:ia'); ?></small>
+                                                                    <br>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer ">
+                                                            <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <button id="print" onclick="printContent('Print');" type="button" class="btn btn-primary">Print</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <a href="#update-<?php echo $reserv->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
                                             <!-- Update Modal -->
                                             <div class="modal fade" id="update-<?php echo $reserv->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -471,12 +532,9 @@ require_once("../partials/head.php");
                 </div>
             </div> <!-- end row -->
         </div> <!-- container -->
-
-
         <!-- Footer -->
         <?php require_once("../partials/footer.php"); ?>
         <!-- End Footer -->
-
 
     </div>
     <!-- End wrapper -->
