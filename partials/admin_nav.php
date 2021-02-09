@@ -97,7 +97,7 @@ while ($logged_in_user = $res->fetch_object()) {
                         </li>
 
                         <li>
-                            <a href="payments.php"><i class="zmdi zmdi-videocam"></i> <span> CCTV Views </span> </a>
+                            <a href="cctv.php"><i class="zmdi zmdi-videocam"></i> <span> CCTV Views </span> </a>
                         </li>
 
 

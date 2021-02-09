@@ -1,6 +1,8 @@
 <?php
 session_start();
 include('../config/config.php');
+require_once('../config/checklogin.php');
+admin();
 include_once('../partials/analytics.php');
 require_once('../partials/head.php');
 ?>
@@ -10,8 +12,6 @@ require_once('../partials/head.php');
     <!-- Navigation Bar-->
     <?php require_once("../partials/admin_nav.php"); ?>
     <!-- End Navigation Bar-->
-
-
 
     <!-- ============================================================== -->
     <!-- Start right Content here -->
@@ -88,7 +88,7 @@ require_once('../partials/head.php');
                                             <td><?php echo $resev->client_name; ?></td>
                                             <td><?php echo $resev->car_regno; ?></td>
                                             <td><?php echo $resev->lot_number; ?></td>
-                                            <td><?php echo $resev->parking_duration; ?></td>
+                                            <td><?php echo $resev->parking_duration; ?> Hours</td>
                                             <td><?php echo $resev->parking_date; ?></td>
                                         </tr>
 

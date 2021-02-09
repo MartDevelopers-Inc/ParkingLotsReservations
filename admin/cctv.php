@@ -4,8 +4,8 @@ include('../config/config.php');
 require_once('../config/checklogin.php');
 admin();
 include('../config/codeGen.php');
-/* Add Parking Slots */
-if (isset($_POST['add_parkinglots'])) {
+
+if (isset($_POST['add_ipcam'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
@@ -20,59 +20,43 @@ if (isset($_POST['add_parkinglots'])) {
         $code = mysqli_real_escape_string($mysqli, trim($_POST['code']));
     } else {
         $error = 1;
-        $err = 'Parking Slot Code Cannot Be Empty';
+        $err = 'IP  Code Cannot Be Empty';
     }
 
-    if (isset($_POST['location']) && !empty($_POST['location'])) {
-        $location = mysqli_real_escape_string($mysqli, trim($_POST['location']));
+    if (isset($_POST['stream_url']) && !empty($_POST['stream_url'])) {
+        $stream_url = mysqli_real_escape_string($mysqli, trim($_POST['stream_url']));
     } else {
         $error = 1;
-        $err = 'Parking Lot Location Name Cannot Be Empty';
-    }
-
-    if (isset($_POST['parking_slots']) && !empty($_POST['parking_slots'])) {
-        $parking_slots = mysqli_real_escape_string($mysqli, trim($_POST['parking_slots']));
-    } else {
-        $error = 1;
-        $err = 'Parking Slots  Cannot Be Empty';
-    }
-
-    if (isset($_POST['price_per_slot']) && !empty($_POST['price_per_slot'])) {
-        $price_per_slot = mysqli_real_escape_string($mysqli, trim($_POST['price_per_slot']));
-    } else {
-        $error = 1;
-        $err = 'Price Per Slot  Cannot Be Empty';
+        $err = 'Stream URL  Cannot Be Empty';
     }
 
 
     if (!$error) {
         //prevent Double entries
-        $sql = "SELECT * FROM  parking_lots WHERE  code='$code'";
+        $sql = "SELECT * FROM  ip_cameras WHERE  code='$code'";
         $res = mysqli_query($mysqli, $sql);
         if (mysqli_num_rows($res) > 0) {
             $row = mysqli_fetch_assoc($res);
             if (
                 $code = $row['code']
             ) {
-                $err =  "Parking Lot With That Code Already Exists ";
+                $err =  "IP Camera With That  Code Already Exists ";
             } else {
             }
         } else {
 
-            $query = 'INSERT INTO parking_lots (id, code, location, parking_slots, price_per_slot) VALUES(?,?,?,?,?)';
+            $query = 'INSERT INTO ip_cameras (id, code, stream_url) VALUES(?,?,?)';
             $stmt = $mysqli->prepare($query);
             $rc = $stmt->bind_param(
-                'sssss',
+                'sss',
                 $id,
                 $code,
-                $location,
-                $parking_slots,
-                $price_per_slot
+                $stream_url
             );
             $stmt->execute();
             if ($stmt) {
                 $success =
-                    'Parking Lot Added' && header('refresh:1; url=parking_lots.php');
+                    'IP Camera Added' && header('refresh:1; url=cctv.php');
             } else {
                 $info = 'Please Try Again Or Try Later';
             }
@@ -81,7 +65,7 @@ if (isset($_POST['add_parkinglots'])) {
 }
 
 /* Update Slots */
-if (isset($_POST['update_parkinglots'])) {
+if (isset($_POST['update_ipcam'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
@@ -96,62 +80,48 @@ if (isset($_POST['update_parkinglots'])) {
         $code = mysqli_real_escape_string($mysqli, trim($_POST['code']));
     } else {
         $error = 1;
-        $err = 'Parking Slot Code Cannot Be Empty';
+        $err = 'IP  Code Cannot Be Empty';
     }
 
-    if (isset($_POST['location']) && !empty($_POST['location'])) {
-        $location = mysqli_real_escape_string($mysqli, trim($_POST['location']));
+    if (isset($_POST['stream_url']) && !empty($_POST['stream_url'])) {
+        $stream_url = mysqli_real_escape_string($mysqli, trim($_POST['stream_url']));
     } else {
         $error = 1;
-        $err = 'Parking Lot Location Name Cannot Be Empty';
-    }
-
-    if (isset($_POST['parking_slots']) && !empty($_POST['parking_slots'])) {
-        $parking_slots = mysqli_real_escape_string($mysqli, trim($_POST['parking_slots']));
-    } else {
-        $error = 1;
-        $err = 'Parking Slots  Cannot Be Empty';
-    }
-
-    if (isset($_POST['price_per_slot']) && !empty($_POST['price_per_slot'])) {
-        $price_per_slot = mysqli_real_escape_string($mysqli, trim($_POST['price_per_slot']));
-    } else {
-        $error = 1;
-        $err = 'Price Per Slot  Cannot Be Empty';
+        $err = 'Stream URL  Cannot Be Empty';
     }
 
 
     if (!$error) {
 
-        $query = 'UPDATE parking_lots SET code =?, location =?, parking_slots =?, price_per_slot =? WHERE id = ?';
+
+        $query = 'UPDATE ip_cameras SET  code =?, stream_url =? WHERE id =?';
         $stmt = $mysqli->prepare($query);
         $rc = $stmt->bind_param(
-            'sssss',
+            'sss',
             $code,
-            $location,
-            $parking_slots,
-            $price_per_slot,
+            $stream_url,
             $id
         );
         $stmt->execute();
         if ($stmt) {
             $success =
-                'Parking Lot Updated' && header('refresh:1; url=parking_lots.php');
+                'IP Camera Updated' && header('refresh:1; url=cctv.php');
         } else {
             $info = 'Please Try Again Or Try Later';
         }
     }
 }
+
 /* Delete Slots */
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    $adn = 'DELETE FROM parking_lots WHERE id=?';
+    $adn = 'DELETE FROM ip_cameras WHERE id=?';
     $stmt = $mysqli->prepare($adn);
     $stmt->bind_param('s', $id);
     $stmt->execute();
     $stmt->close();
     if ($stmt) {
-        $success = 'Deleted' && header('refresh:1; url=parking_lots.php');
+        $success = 'Deleted' && header('refresh:1; url=cctv.php');
     } else {
         //inject alert that task failed
         $info = 'Please Try Again Or Try Later';
@@ -179,9 +149,9 @@ require_once("../partials/head.php");
                 <div class="col-sm-12">
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
-                            <a href="#add_modal" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Parking Lots</a>
+                            <a href="#add_modal" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add IP Camera</a>
                         </div>
-                        <h4 class="page-title">Parking Lots</h4>
+                        <h4 class="page-title">Parking Lots IP Cameras</h4>
                     </div>
                 </div>
             </div>
@@ -198,25 +168,17 @@ require_once("../partials/head.php");
                             <div class="row">
                                 <!-- Hide This -->
                                 <input type="hidden" required name="id" value="<?php echo $ID; ?>" class="form-control">
-                                <div class="form-group col-md-6">
-                                    <label for="">Parking Lot Code Number</label>
+                                <div class="form-group col-md-12">
+                                    <label for="">IP Camera Code</label>
                                     <input type="text" required name="code" value="<?php echo $a; ?>-<?php echo $b; ?>" class="form-control">
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label for="">Parking Lot Location</label>
-                                    <input type="text" required name="location" value="" class="form-control">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="">Parking Slots Available</label>
-                                    <input type="text" required name="parking_slots" class="form-control">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="">Parking Price Per Slot Per Hour</label>
-                                    <input type="text" required name="price_per_slot" class="form-control">
+                                <div class="form-group col-md-12">
+                                    <label for="">IP Camera Stream Url</label>
+                                    <input type="text" required name="stream_url" value="" class="form-control">
                                 </div>
                             </div>
                             <div class="text-right">
-                                <button type="submit" name="add_parkinglots" class="btn btn-primary">Submit</button>
+                                <button type="submit" name="add_ipcam" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -231,10 +193,8 @@ require_once("../partials/head.php");
                         <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Code Number</th>
-                                    <th>Parking Lot Location</th>
-                                    <th>Parking Slots</th>
-                                    <th>Price Per Slot</th>
+                                    <th>IP Camera Code</th>
+                                    <th>Streaming URL</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -242,20 +202,38 @@ require_once("../partials/head.php");
 
                             <tbody>
                                 <?php
-                                $ret = 'SELECT * FROM `parking_lots` ';
+                                $ret = 'SELECT * FROM `ip_cameras` ';
                                 $stmt = $mysqli->prepare($ret);
                                 $stmt->execute(); //ok
                                 $res = $stmt->get_result();
-                                while ($parking = $res->fetch_object()) { ?>
+                                while ($ip = $res->fetch_object()) { ?>
                                     <tr>
-                                        <td><?php echo $parking->code; ?></td>
-                                        <td><?php echo $parking->location; ?></td>
-                                        <td><?php echo $parking->parking_slots; ?></td>
-                                        <td>Ksh <?php echo $parking->price_per_slot; ?></td>
+                                        <td><?php echo $ip->code; ?></td>
+                                        <td><?php echo $ip->stream_url; ?></td>
                                         <td>
-                                            <a href="#update-<?php echo $parking->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
+                                            <a href="#stream-<?php echo $ip->id; ?>" data-toggle="modal" class="badge bg-success">Stream</a>
                                             <!-- Update Modal -->
-                                            <div class="modal fade" id="update-<?php echo $parking->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal fade" id="stream-<?php echo $ip->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="embed-responsive embed-responsive-16by9">
+                                                                <iframe width="560" height="315" src="<?php echo $ip->stream_url;?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer ">
+                                                            <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a href="#update-<?php echo $ip->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
+                                            <!-- Update Modal -->
+                                            <div class="modal fade" id="update-<?php echo $ip->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -269,26 +247,18 @@ require_once("../partials/head.php");
                                                                 <div class="card-body">
                                                                     <div class="row">
                                                                         <!-- Hide This -->
-                                                                        <input type="hidden" required name="id" value="<?php echo $parking->id; ?>" class="form-control">
-                                                                        <div class="form-group col-md-6">
-                                                                            <label for="">Parking Lot Code Number</label>
-                                                                            <input type="text" required name="code" value="<?php echo $parking->code; ?>" class="form-control">
+                                                                        <input type="hidden" required name="id" value="<?php echo $ip->id; ?>" class="form-control">
+                                                                        <div class="form-group col-md-12">
+                                                                            <label for="">IP Camera Code</label>
+                                                                            <input type="text" required name="code" value="<?php echo $ip->code; ?>" class="form-control">
                                                                         </div>
-                                                                        <div class="form-group col-md-6">
-                                                                            <label for="">Parking Lot Location</label>
-                                                                            <input type="text" required value="<?php echo $parking->location; ?>" name="location" value="" class="form-control">
-                                                                        </div>
-                                                                        <div class="form-group col-md-6">
-                                                                            <label for="">Parking Slots Available</label>
-                                                                            <input type="text" required value="<?php echo $parking->parking_slots; ?>" name="parking_slots" class="form-control">
-                                                                        </div>
-                                                                        <div class="form-group col-md-6">
-                                                                            <label for="">Parking Price Per Slot Per Hour</label>
-                                                                            <input type="text" required value="<?php echo $parking->price_per_slot; ?>" name="price_per_slot" class="form-control">
+                                                                        <div class="form-group col-md-12">
+                                                                            <label for="">IP Camera Stream Url</label>
+                                                                            <input type="text" required name="stream_url" value="<?php echo $ip->stream_url; ?>" class="form-control">
                                                                         </div>
                                                                     </div>
                                                                     <div class="text-right">
-                                                                        <button type="submit" name="update_parkinglots" class="btn btn-primary">Submit</button>
+                                                                        <button type="submit" name="update_ipcam" class="btn btn-primary">Submit</button>
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -300,18 +270,18 @@ require_once("../partials/head.php");
                                                 </div>
                                             </div>
 
-                                            <a href="#delete-<?php echo $parking->id; ?>" class="badge bg-danger" data-animation="makeway" data-plugin="custommodal" data-overlaySpeed="100">Delete</a>
+                                            <a href="#delete-<?php echo $ip->id; ?>" class="badge bg-danger" data-animation="makeway" data-plugin="custommodal" data-overlaySpeed="100">Delete</a>
                                             <!-- Delete Modal -->
-                                            <div id="delete-<?php echo $parking->id; ?>" class="modal-demo">
+                                            <div id="delete-<?php echo $ip->id; ?>" class="modal-demo">
                                                 <button type="button" class="close" onclick="Custombox.modal.close();">
                                                     <span>&times;</span><span class="sr-only">Close</span>
                                                 </button>
                                                 <h4 class="custom-modal-title">Confirm Deletion</h4>
                                                 <div class="text-center">
-                                                    <h4>Delete <?php echo $parking->code; ?> ? </h4>
+                                                    <h4>Delete <?php echo $ip->code; ?> ? </h4>
                                                     <br>
                                                     <button type="button" class="text-center btn btn-success" onclick="Custombox.modal.close();">No</button>
-                                                    <a href="parking_lots.php?delete=<?php echo $parking->id; ?>" class="text-center btn btn-danger"> Delete </a>
+                                                    <a href="cctv.php?delete=<?php echo $ip->id; ?>" class="text-center btn btn-danger"> Delete </a>
                                                 </div>
                                             </div>
 
