@@ -5,8 +5,8 @@ require_once('../config/checklogin.php');
 admin();
 include('../config/codeGen.php');
 
-/* Add Reservations */
-if (isset($_POST['add_reservation'])) {
+/* Pay Reservations */
+if (isset($_POST['pay_reservations'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
@@ -21,7 +21,7 @@ if (isset($_POST['add_reservation'])) {
         $code = mysqli_real_escape_string($mysqli, trim($_POST['code']));
     } else {
         $error = 1;
-        $err = 'Reservation Code Cannot Be Empty';
+        $err = 'Payment Code Cannot Be Empty';
     }
 
     if (isset($_POST['client_name']) && !empty($_POST['client_name'])) {
@@ -38,33 +38,14 @@ if (isset($_POST['add_reservation'])) {
         $err = 'Client Phone  Cannot Be Empty';
     }
 
-    if (isset($_POST['car_regno']) && !empty($_POST['car_regno'])) {
-        $car_regno = mysqli_real_escape_string($mysqli, trim($_POST['car_regno']));
+
+    if (isset($_POST['r_id']) && !empty($_POST['r_id'])) {
+        $r_id  = mysqli_real_escape_string($mysqli, trim($_POST['r_id']));
     } else {
         $error = 1;
-        $err = 'Client Car Reg Number Cannot Be Empty';
+        $err = 'Parking Reservation ID Cannot  Be Empty';
     }
 
-    if (isset($_POST['lot_number']) && !empty($_POST['lot_number'])) {
-        $lot_number = mysqli_real_escape_string($mysqli, trim($_POST['lot_number']));
-    } else {
-        $error = 1;
-        $err = 'Parking Lot Number Be Empty';
-    }
-
-    if (isset($_POST['parking_duration']) && !empty($_POST['parking_duration'])) {
-        $parking_duration = mysqli_real_escape_string($mysqli, trim($_POST['parking_duration']));
-    } else {
-        $error = 1;
-        $err = 'Parking Duration Cannot  Be Empty';
-    }
-
-    if (isset($_POST['parking_date']) && !empty($_POST['parking_date'])) {
-        $parking_date = mysqli_real_escape_string($mysqli, trim($_POST['parking_date']));
-    } else {
-        $error = 1;
-        $err = 'Parking Date Number Be Empty';
-    }
 
     if (isset($_POST['amt']) && !empty($_POST['amt'])) {
         $amt = mysqli_real_escape_string($mysqli, trim($_POST['amt']));
@@ -83,37 +64,37 @@ if (isset($_POST['add_reservation'])) {
 
     if (!$error) {
         //prevent Double entries
-        $sql = "SELECT * FROM  reservations WHERE  code='$code' ";
+        $sql = "SELECT * FROM  payments WHERE  code='$code' ";
         $res = mysqli_query($mysqli, $sql);
         if (mysqli_num_rows($res) > 0) {
             $row = mysqli_fetch_assoc($res);
             if (
                 $code = $row['code']
             ) {
-                $err =  "Client Parking Reservation With That Code Number Already Exists ";
+                $err =  "Payment With That Code Number Already Exists ";
             } else {
             }
         } else {
 
-            $query = 'INSERT INTO reservations (id, code, client_name, client_phone, car_regno, lot_number, parking_duration, parking_date, amt, status) VALUES(?,?,?,?,?,?,?,?,?,?)';
+
+            $query = 'INSERT INTO payments (id, code, client_name, client_phone, amt, r_id) VALUES(?,?,?,?,?,?)';
+            /* Update Reservation Status Set To Paid */
+            $reservationqry = "UPDATE reservations SET status = 'Paid' WHERE id = '$r_id'";
             $stmt = $mysqli->prepare($query);
+            $reservationstmt = $mysqli->prepare(($reservationqry));
             $rc = $stmt->bind_param(
-                'ssssssssss',
+                'ssssss',
                 $id,
                 $code,
                 $client_name,
                 $client_phone,
-                $car_regno,
-                $lot_number,
-                $parking_duration,
-                $parking_date,
                 $amt,
-                $status
+                $r_id
             );
             $stmt->execute();
+            $reservationstmt->execute();
             if ($stmt) {
-                $success =
-                    'Client Account Parking Reservation Added' && header('refresh:1; url=reservations.php');
+                $success = 'Client Account Parking Reservation Paid' && header('refresh:1; url=reservations.php');
             } else {
                 $info = 'Please Try Again Or Try Later';
             }
@@ -121,8 +102,8 @@ if (isset($_POST['add_reservation'])) {
     }
 }
 
-/* Update Client Reservations */
-if (isset($_POST['update_reservation'])) {
+/* Update Paid Reservations */
+if (isset($_POST['update_payment'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
@@ -137,7 +118,7 @@ if (isset($_POST['update_reservation'])) {
         $code = mysqli_real_escape_string($mysqli, trim($_POST['code']));
     } else {
         $error = 1;
-        $err = 'Reservation Code Cannot Be Empty';
+        $err = 'Payment Code Cannot Be Empty';
     }
 
     if (isset($_POST['client_name']) && !empty($_POST['client_name'])) {
@@ -154,33 +135,14 @@ if (isset($_POST['update_reservation'])) {
         $err = 'Client Phone  Cannot Be Empty';
     }
 
-    if (isset($_POST['car_regno']) && !empty($_POST['car_regno'])) {
-        $car_regno = mysqli_real_escape_string($mysqli, trim($_POST['car_regno']));
+
+    if (isset($_POST['r_id']) && !empty($_POST['r_id'])) {
+        $r_id  = mysqli_real_escape_string($mysqli, trim($_POST['r_id']));
     } else {
         $error = 1;
-        $err = 'Client Car Reg Number Cannot Be Empty';
+        $err = 'Parking Reservation ID Cannot  Be Empty';
     }
 
-    if (isset($_POST['lot_number']) && !empty($_POST['lot_number'])) {
-        $lot_number = mysqli_real_escape_string($mysqli, trim($_POST['lot_number']));
-    } else {
-        $error = 1;
-        $err = 'Parking Lot Number Be Empty';
-    }
-
-    if (isset($_POST['parking_duration']) && !empty($_POST['parking_duration'])) {
-        $parking_duration = mysqli_real_escape_string($mysqli, trim($_POST['parking_duration']));
-    } else {
-        $error = 1;
-        $err = 'Parking Duration Cannot  Be Empty';
-    }
-
-    if (isset($_POST['parking_date']) && !empty($_POST['parking_date'])) {
-        $parking_date = mysqli_real_escape_string($mysqli, trim($_POST['parking_date']));
-    } else {
-        $error = 1;
-        $err = 'Parking Date Number Be Empty';
-    }
 
     if (isset($_POST['amt']) && !empty($_POST['amt'])) {
         $amt = mysqli_real_escape_string($mysqli, trim($_POST['amt']));
@@ -197,40 +159,43 @@ if (isset($_POST['update_reservation'])) {
     }
 
 
-    $query = 'UPDATE reservations SET  code =?, client_name =?, client_phone =?, car_regno=?, lot_number =?, parking_duration =?, parking_date =?, amt =?, status =? WHERE id = ?';
-    $stmt = $mysqli->prepare($query);
-    $rc = $stmt->bind_param(
-        'ssssssssss',
-        $code,
-        $client_name,
-        $client_phone,
-        $car_regno,
-        $lot_number,
-        $parking_duration,
-        $parking_date,
-        $amt,
-        $status,
-        $id
-    );
-    $stmt->execute();
-    if ($stmt) {
-        $success =
-            'Client Account Parking Reservation Updated' && header('refresh:1; url=reservations.php');
-    } else {
-        $info = 'Please Try Again Or Try Later';
+    if (!$error) {
+
+        $query = 'UPDATE  payments SET  code =?, client_name =?, client_phone =?, amt =?, r_id =? WHERE id =?';
+        /* Update Reservation Status Set To Paid */
+        $reservationqry = "UPDATE reservations SET status = 'Paid' WHERE id = '$r_id'";
+        $stmt = $mysqli->prepare($query);
+        $reservationstmt = $mysqli->prepare(($reservationqry));
+        $rc = $stmt->bind_param(
+            'ssssss',
+            $id,
+            $code,
+            $client_name,
+            $client_phone,
+            $amt,
+            $r_id
+        );
+        $stmt->execute();
+        $reservationstmt->execute();
+        if ($stmt) {
+            $success = 'Client Account Parking Reservation Payment Updated' && header('refresh:1; url=payments.php');
+        } else {
+            $info = 'Please Try Again Or Try Later';
+        }
     }
 }
 
-/* Delete Reservations */
+
+/* Delete Payment */
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    $adn = 'DELETE FROM reservations WHERE id=?';
+    $adn = 'DELETE FROM payments WHERE id=?';
     $stmt = $mysqli->prepare($adn);
     $stmt->bind_param('s', $id);
     $stmt->execute();
     $stmt->close();
     if ($stmt) {
-        $success = 'Deleted' && header('refresh:1; url=reservations.php');
+        $success = 'Deleted' && header('refresh:1; url=payments.php');
         //inject alert that task failed
         $info = 'Deleted';
     }
@@ -257,91 +222,12 @@ require_once("../partials/head.php");
                 <div class="col-sm-12">
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
-                            <a href="#add_modal" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Parking Lot Reservation</a>
+                            <a href="add_payment.php" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Parking Lot Payment</a>
                         </div>
-                        <h4 class="page-title">Reservations</h4>
+                        <h4 class="page-title">Reservations Payments</h4>
                     </div>
                 </div>
             </div>
-            <!-- Add
-              Modal -->
-            <div id="add_modal" class="modal-demo">
-                <button type="button" class="close" onclick="Custombox.modal.close();">
-                    <span>&times;</span><span class="sr-only">Close</span>
-                </button>
-                <h4 class="custom-modal-title">Fill All Required Fields</h4>
-                <div class="custom-modal-text">
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="card-body">
-                            <div class="row">
-                                <!-- Hide This -->
-                                <input type="hidden" required name="id" value="<?php echo $ID; ?>" class="form-control">
-                                <input type="hidden" required name="status" value="Pending" class="form-control">
-                                <div class="form-group col-md-12">
-                                    <label for="">Client Phone Number</label>
-                                    <!-- Ajax Client Phone Number To Get Client Details -->
-                                    <select type="text" onchange="getClientDetails(this.value);" id="Phone" required name="client_phone" class="form-control">
-                                        <option>Select Client Phone Number</option>
-                                        <?php
-                                        $ret = 'SELECT * FROM `clients` ';
-                                        $stmt = $mysqli->prepare($ret);
-                                        $stmt->execute(); //ok
-                                        $res = $stmt->get_result();
-                                        while ($client = $res->fetch_object()) { ?>
-                                            <option><?php echo $client->phone; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="">Client Name</label>
-                                    <input type="text" id="Name" required name="client_name" class="form-control">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="">Client Car Reg Number</label>
-                                    <input type="text" required id="CarRegno" name="car_regno" class="form-control">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label for="">Reservation Code</label>
-                                    <input type="text" required name="code" value="<?php echo $a; ?>-<?php echo $b; ?>" class="form-control">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label for="">Parking Lot Number</label>
-                                    <select type="text" onchange="getParkingDetails(this.value);" id="ParkingLotNumber" required name="lot_number" class="form-control">
-                                        <option>Select Parking Lot Number</option>
-                                        <?php
-                                        $ret = 'SELECT * FROM `parking_lots` ';
-                                        $stmt = $mysqli->prepare($ret);
-                                        $stmt->execute(); //ok
-                                        $res = $stmt->get_result();
-                                        while ($lots = $res->fetch_object()) { ?>
-                                            <option><?php echo $lots->code; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="">Parking Fee</label>
-                                    <input type="text" required name="amt" id="ParkingFee" class="form-control">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="">Parking Duration (Hours)</label>
-                                    <input type="text" required name="parking_duration" class="form-control">
-                                </div>
-                                <div class="form-group col-md-12">
-                                    <label for="">Parking Date And Time</label>
-                                    <input type="text" value="<?php echo date('d M Y g:ia'); ?>" required name="parking_date" class="form-control">
-                                </div>
-
-                            </div>
-                            <div class="text-right">
-                                <button type="submit" name="add_reservation" class="btn btn-primary">Submit</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!-- End Modal -->
 
             <!-- end row -->
             <div class="row">

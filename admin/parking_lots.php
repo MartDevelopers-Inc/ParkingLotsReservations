@@ -1,6 +1,8 @@
 <?php
 session_start();
 include('../config/config.php');
+require_once('../config/checklogin.php');
+admin();
 include('../config/codeGen.php');
 /* Add Parking Slots */
 if (isset($_POST['add_parkinglots'])) {
