@@ -30,7 +30,7 @@ if (isset($_POST['add_ipcam'])) {
         $err = 'Stream URL  Cannot Be Empty';
     }
 
-    
+
     if (!$error) {
         //prevent Double entries
         $sql = "SELECT * FROM  ip_cameras WHERE  code='$code'";
@@ -90,27 +90,27 @@ if (isset($_POST['update_ipcam'])) {
         $err = 'Stream URL  Cannot Be Empty';
     }
 
-    
-    if (!$error) {
-       
 
-            $query = 'UPDATE ip_cameras SET  code =?, stream_url =? WHERE id =?';
-            $stmt = $mysqli->prepare($query);
-            $rc = $stmt->bind_param(
-                'sss',
-                $code,
-                $stream_url,
-                $id
-            );
-            $stmt->execute();
-            if ($stmt) {
-                $success =
-                    'IP Camera Updated' && header('refresh:1; url=cctv.php');
-            } else {
-                $info = 'Please Try Again Or Try Later';
-            }
+    if (!$error) {
+
+
+        $query = 'UPDATE ip_cameras SET  code =?, stream_url =? WHERE id =?';
+        $stmt = $mysqli->prepare($query);
+        $rc = $stmt->bind_param(
+            'sss',
+            $code,
+            $stream_url,
+            $id
+        );
+        $stmt->execute();
+        if ($stmt) {
+            $success =
+                'IP Camera Updated' && header('refresh:1; url=cctv.php');
+        } else {
+            $info = 'Please Try Again Or Try Later';
         }
     }
+}
 
 /* Delete Slots */
 if (isset($_GET['delete'])) {
@@ -174,7 +174,7 @@ require_once("../partials/head.php");
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="">IP Camera Stream Url</label>
-                                    <input type="text" required name="stream_url " value="" class="form-control">
+                                    <input type="text" required name="stream_url" value="" class="form-control">
                                 </div>
                             </div>
                             <div class="text-right">
@@ -209,12 +209,12 @@ require_once("../partials/head.php");
                                 while ($ip = $res->fetch_object()) { ?>
                                     <tr>
                                         <td><?php echo $ip->code; ?></td>
-                                        <td><?php echo $ip->streaming_url; ?></td>
+                                        <td><?php echo $ip->stream_url; ?></td>
                                         <td>
-                                        <a href="#stream-<?php echo $ip->id; ?>" data-toggle="modal" class="badge bg-success">Stream</a>
+                                            <a href="#stream-<?php echo $ip->id; ?>" data-toggle="modal" class="badge bg-success">Stream</a>
                                             <!-- Update Modal -->
-                                            <div class="modal fade" id="stream-<?php echo $parking->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal fade" id="stream-<?php echo $ip->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -222,7 +222,8 @@ require_once("../partials/head.php");
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                           
+                                                            <div class="embed-responsive embed-responsive-16by9">
+                                                                <iframe width="560" height="315" src="<?php echo $ip->stream_url;?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                                                            </div>
                                                         </div>
                                                         <div class="modal-footer ">
                                                             <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
@@ -232,7 +233,7 @@ require_once("../partials/head.php");
                                             </div>
                                             <a href="#update-<?php echo $ip->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
                                             <!-- Update Modal -->
-                                            <div class="modal fade" id="update-<?php echo $parking->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal fade" id="update-<?php echo $ip->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
