@@ -123,7 +123,6 @@ require_once("../partials/head.php");
                 <div class="col-sm-12">
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
-                            <a href="add_payment.php" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Parking Lot Payment</a>
                         </div>
                         <h4 class="page-title">Reservations Payments</h4>
                     </div>
@@ -166,7 +165,7 @@ require_once("../partials/head.php");
                                         <td><?php echo $reserv->parking_duration; ?> Hours</td>
                                         <td><?php echo $reserv->parking_date; ?></td>
                                         <td>
-                                            <a href="#pay-<?php echo $reserv->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
+                                            <a href="#pay-<?php echo $reserv->id; ?>" data-toggle="modal" class="badge bg-warning">Add Payment</a>
                                             <!-- Update Modal -->
                                             <div class="modal fade" id="pay-<?php echo $reserv->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">

@@ -168,12 +168,12 @@ if (isset($_POST['update_payment'])) {
         $reservationstmt = $mysqli->prepare(($reservationqry));
         $rc = $stmt->bind_param(
             'ssssss',
-            $id,
             $code,
             $client_name,
             $client_phone,
             $amt,
-            $r_id
+            $r_id,
+            $id
         );
         $stmt->execute();
         $reservationstmt->execute();
@@ -222,7 +222,7 @@ require_once("../partials/head.php");
                 <div class="col-sm-12">
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
-                            <a href="add_payment.php" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" >Add Parking Lot Payment</a>
+                            <a href="add_payment.php" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10">Add Parking Lot Payment</a>
                         </div>
                         <h4 class="page-title">Reservations Payments</h4>
                     </div>
@@ -259,6 +259,26 @@ require_once("../partials/head.php");
                                         <td><?php echo $pay->client_phone; ?></td>
                                         <td><?php echo date('d M Y g:ia', strtotime($pay->created_at)); ?></td>
                                         <td>
+                                            <a href="#receipt-<?php echo $pay->id; ?>" data-toggle="modal" class="badge bg-success">Receipt</a>
+                                            <div class="modal fade" id="receipt-<?php echo $pay->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel"><?php echo $pay->client_name ?> Reservation Payment</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            
+                                                        </div>
+                                                        <div class="modal-footer ">
+                                                            <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <a href="#update-<?php echo $pay->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
                                             <!-- Update Modal -->
                                             <div class="modal fade" id="update-<?php echo $pay->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -271,7 +291,35 @@ require_once("../partials/head.php");
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-
+                                                            <form method="post" enctype="multipart/form-data">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <!-- Hide This -->
+                                                                        <input type="hidden" required name="id" value="<?php echo $pay->id; ?>" class="form-control">
+                                                                        <input type="hidden" required name="r_id" value="<?php echo $pay->r_id; ?>" class="form-control">
+                                                                        <input type="hidden" required name="status" value="Paid" class="form-control">
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Client Phone Number</label>
+                                                                            <input type="text" value="<?php echo $pay->client_phone; ?>" required name="client_phone" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Client Name</label>
+                                                                            <input type="text" value="<?php echo $pay->client_name; ?>" required name="client_name" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Parking Fee</label>
+                                                                            <input type="text" required name="amt" value="<?php echo $pay->amt; ?>" class="form-control">
+                                                                        </div>
+                                                                        <div class="form-group col-md-6">
+                                                                            <label for="">Payment Code</label>
+                                                                            <input type="text" required value="<?php echo $pay->code; ?>" name="code" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-right">
+                                                                        <button type="submit" name="update_payment" class="btn btn-primary">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                         <div class="modal-footer ">
                                                             <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
@@ -294,6 +342,7 @@ require_once("../partials/head.php");
                                                     <a href="payments.php?delete=<?php echo $pay->id; ?>" class="text-center btn btn-danger"> Delete </a>
                                                 </div>
                                             </div>
+
 
                                         </td>
                                     </tr>
