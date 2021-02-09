@@ -222,7 +222,7 @@ require_once("../partials/head.php");
                 <div class="col-sm-12">
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
-                            <a href="add_payment.php" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" data-animation="door" data-plugin="custommodal" data-overlaySpeed="100" data-overlayColor="#36404a">Add Parking Lot Payment</a>
+                            <a href="add_payment.php" class="btn btn-primary waves-effect waves-light m-r-5 m-t-10" >Add Parking Lot Payment</a>
                         </div>
                         <h4 class="page-title">Reservations Payments</h4>
                     </div>

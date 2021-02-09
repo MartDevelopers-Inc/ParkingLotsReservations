@@ -94,110 +94,11 @@ if (isset($_POST['pay_reservations'])) {
             $stmt->execute();
             $reservationstmt->execute();
             if ($stmt) {
-                $success = 'Client Account Parking Reservation Paid' && header('refresh:1; url=reservations.php');
+                $success = 'Client Account Parking Reservation Paid' && header('refresh:1; url=add_payment.php');
             } else {
                 $info = 'Please Try Again Or Try Later';
             }
         }
-    }
-}
-
-/* Update Paid Reservations */
-if (isset($_POST['update_payment'])) {
-    //Error Handling and prevention of posting double entries
-    $error = 0;
-
-    if (isset($_POST['id']) && !empty($_POST['id'])) {
-        $id = mysqli_real_escape_string($mysqli, trim($_POST['id']));
-    } else {
-        $error = 1;
-        $err = 'ID Cannot Be Empty';
-    }
-
-    if (isset($_POST['code']) && !empty($_POST['code'])) {
-        $code = mysqli_real_escape_string($mysqli, trim($_POST['code']));
-    } else {
-        $error = 1;
-        $err = 'Payment Code Cannot Be Empty';
-    }
-
-    if (isset($_POST['client_name']) && !empty($_POST['client_name'])) {
-        $client_name = mysqli_real_escape_string($mysqli, trim($_POST['client_name']));
-    } else {
-        $error = 1;
-        $err = 'Client Name Cannot Be Empty';
-    }
-
-    if (isset($_POST['client_phone']) && !empty($_POST['client_phone'])) {
-        $client_phone = mysqli_real_escape_string($mysqli, trim((($_POST['client_phone']))));
-    } else {
-        $error = 1;
-        $err = 'Client Phone  Cannot Be Empty';
-    }
-
-
-    if (isset($_POST['r_id']) && !empty($_POST['r_id'])) {
-        $r_id  = mysqli_real_escape_string($mysqli, trim($_POST['r_id']));
-    } else {
-        $error = 1;
-        $err = 'Parking Reservation ID Cannot  Be Empty';
-    }
-
-
-    if (isset($_POST['amt']) && !empty($_POST['amt'])) {
-        $amt = mysqli_real_escape_string($mysqli, trim($_POST['amt']));
-    } else {
-        $error = 1;
-        $err = 'Parking Amount Number Be Empty';
-    }
-
-    if (isset($_POST['status']) && !empty($_POST['status'])) {
-        $status = mysqli_real_escape_string($mysqli, trim($_POST['status']));
-    } else {
-        $error = 1;
-        $err = 'Reservation Status Number Be Empty';
-    }
-
-
-    if (!$error) {
-
-        $query = 'UPDATE  payments SET  code =?, client_name =?, client_phone =?, amt =?, r_id =? WHERE id =?';
-        /* Update Reservation Status Set To Paid */
-        $reservationqry = "UPDATE reservations SET status = 'Paid' WHERE id = '$r_id'";
-        $stmt = $mysqli->prepare($query);
-        $reservationstmt = $mysqli->prepare(($reservationqry));
-        $rc = $stmt->bind_param(
-            'ssssss',
-            $id,
-            $code,
-            $client_name,
-            $client_phone,
-            $amt,
-            $r_id
-        );
-        $stmt->execute();
-        $reservationstmt->execute();
-        if ($stmt) {
-            $success = 'Client Account Parking Reservation Payment Updated' && header('refresh:1; url=payments.php');
-        } else {
-            $info = 'Please Try Again Or Try Later';
-        }
-    }
-}
-
-
-/* Delete Payment */
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $adn = 'DELETE FROM payments WHERE id=?';
-    $stmt = $mysqli->prepare($adn);
-    $stmt->bind_param('s', $id);
-    $stmt->execute();
-    $stmt->close();
-    if ($stmt) {
-        $success = 'Deleted' && header('refresh:1; url=payments.php');
-        //inject alert that task failed
-        $info = 'Deleted';
     }
 }
 
@@ -250,7 +151,7 @@ require_once("../partials/head.php");
 
                             <tbody>
                                 <?php
-                                $ret = 'SELECT * FROM `reservations` ';
+                                $ret = 'SELECT * FROM `reservations` WHERE status !="Paid" ';
                                 $stmt = $mysqli->prepare($ret);
                                 $stmt->execute(); //ok
                                 $res = $stmt->get_result();
@@ -265,13 +166,13 @@ require_once("../partials/head.php");
                                         <td><?php echo $reserv->parking_duration; ?> Hours</td>
                                         <td><?php echo $reserv->parking_date; ?></td>
                                         <td>
-                                            <a href="#update-<?php echo $reserv->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
+                                            <a href="#pay-<?php echo $reserv->id; ?>" data-toggle="modal" class="badge bg-warning">Update</a>
                                             <!-- Update Modal -->
-                                            <div class="modal fade" id="update-<?php echo $reserv->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal fade" id="pay-<?php echo $reserv->id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Update <?php echo $reserv->client_name ?> Reservation</h5>
+                                                            <h5 class="modal-title" id="exampleModalLabel">Pay <?php echo $reserv->client_name ?> Reservation</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
@@ -281,8 +182,9 @@ require_once("../partials/head.php");
                                                                 <div class="card-body">
                                                                     <div class="row">
                                                                         <!-- Hide This -->
-                                                                        <input type="hidden" required name="id" value="<?php echo $reserv->id; ?>" class="form-control">
-                                                                        <input type="hidden" required name="status" value="Pending" class="form-control">
+                                                                        <input type="hidden" required name="id" value="<?php echo $ID; ?>" class="form-control">
+                                                                        <input type="hidden" required name="r_id" value="<?php echo $reserv->id; ?>" class="form-control">
+                                                                        <input type="hidden" required name="status" value="Paid" class="form-control">
                                                                         <div class="form-group col-md-6">
                                                                             <label for="">Client Phone Number</label>
                                                                             <input type="text" value="<?php echo $reserv->client_phone; ?>" required name="client_phone" class="form-control">
@@ -292,35 +194,16 @@ require_once("../partials/head.php");
                                                                             <input type="text" value="<?php echo $reserv->client_name; ?>" required name="client_name" class="form-control">
                                                                         </div>
                                                                         <div class="form-group col-md-6">
-                                                                            <label for="">Client Car Reg Number</label>
-                                                                            <input type="text" required value="<?php echo $reserv->car_regno; ?>" name="car_regno" class="form-control">
-                                                                        </div>
-
-                                                                        <div class="form-group col-md-6">
-                                                                            <label for="">Reservation Code</label>
-                                                                            <input type="text" required name="code" value="<?php echo $reserv->code; ?>" class="form-control">
-                                                                        </div>
-
-                                                                        <div class="form-group col-md-6">
-                                                                            <label for="">Parking Lot Number</label>
-                                                                            <input type="text" required name="lot_number" value="<?php echo $reserv->lot_number; ?>" class="form-control">
-                                                                        </div>
-                                                                        <div class="form-group col-md-6">
                                                                             <label for="">Parking Fee</label>
                                                                             <input type="text" required name="amt" value="<?php echo $reserv->amt; ?>" class="form-control">
                                                                         </div>
                                                                         <div class="form-group col-md-6">
-                                                                            <label for="">Parking Duration (Hours)</label>
-                                                                            <input type="text" required value="<?php echo $reserv->parking_duration; ?>" name="parking_duration" class="form-control">
+                                                                            <label for="">Payment Code</label>
+                                                                            <input type="text" required value="<?php echo $paycode; ?>" name="code" class="form-control">
                                                                         </div>
-                                                                        <div class="form-group col-md-6">
-                                                                            <label for="">Parking Date And Time</label>
-                                                                            <input type="text" value="<?php echo date('d M Y g:ia'); ?>" required name="parking_date" class="form-control">
-                                                                        </div>
-
                                                                     </div>
                                                                     <div class="text-right">
-                                                                        <button type="submit" name="update_reservation" class="btn btn-primary">Submit</button>
+                                                                        <button type="submit" name="pay_reservations" class="btn btn-primary">Submit</button>
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -329,21 +212,6 @@ require_once("../partials/head.php");
                                                             <button type="button" class="pull-left btn btn-secondary" data-dismiss="modal">Close</button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <a href="#delete-<?php echo $reserv->id; ?>" class="badge bg-danger" data-animation="makeway" data-plugin="custommodal" data-overlaySpeed="100">Delete</a>
-                                            <!-- Delete Modal -->
-                                            <div id="delete-<?php echo $reserv->id; ?>" class="modal-demo">
-                                                <button type="button" class="close" onclick="Custombox.modal.close();">
-                                                    <span>&times;</span><span class="sr-only">Close</span>
-                                                </button>
-                                                <h4 class="custom-modal-title">Confirm Deletion</h4>
-                                                <div class="text-center">
-                                                    <h4>Delete <?php echo $reserv->client_name; ?> Parking Reservation ? </h4>
-                                                    <br>
-                                                    <button type="button" class="text-center btn btn-success" onclick="Custombox.modal.close();">No</button>
-                                                    <a href="reservations.php?delete=<?php echo $reserv->id; ?>" class="text-center btn btn-danger"> Delete </a>
                                                 </div>
                                             </div>
 
