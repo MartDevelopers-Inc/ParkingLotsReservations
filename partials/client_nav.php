@@ -83,9 +83,7 @@ while ($logged_in_user = $res->fetch_object()) {
                             <a href="parking_lots.php"><i class="zmdi zmdi-traffic"></i> <span> Parking Lots </span> </a>
                         </li>
 
-                        <li>
-                            <a href="clients.php"><i class="zmdi zmdi-accounts-alt"></i> <span> Clients </span> </a>
-                        </li>
+                        
 
                         <li>
                             <a href="reservations.php"><i class="zmdi zmdi-calendar-check"></i> <span> Reservations </span> </a>
@@ -95,20 +93,14 @@ while ($logged_in_user = $res->fetch_object()) {
                             <a href="payments.php"><i class="zmdi zmdi-money-box"></i> <span> Payments </span> </a>
                         </li>
 
-                        <li>
-                            <a href="cctv.php"><i class="zmdi zmdi-videocam"></i> <span> CCTV Views </span> </a>
-                        </li>
-
-
+                    
                         <li class="has-submenu">
                             <a href="#"><i class="zmdi zmdi-collection-item"></i> <span> Advanced Reporting </span> </a>
                             <ul class="submenu megamenu">
                                 <li>
                                     <ul>
-                                        <li><a href="reports_parking_lots.php">Parking Lots</a></li>
-                                        <li><a href="reports_clients.php">Clients</a></li>
-                                        <li><a href="reports_parking_reservations.php">Parking Reservations</a></li>
-                                        <li><a href="reports_payments.php">Payments</a></li>
+                                        <li><a href="reports_parking_reservations.php">My Parking Reservations</a></li>
+                                        <li><a href="reports_payments.php">My Payments</a></li>
                                     </ul>
                                 </li>
 

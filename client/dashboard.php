@@ -45,7 +45,7 @@ require_once('../partials/head.php');
                     <div class="card-box tilebox-one">
                         <i class="zmdi zmdi-money-box float-right text-muted"></i>
                         <h6 class="text-muted text-uppercase m-b-20">My Reservations</h6>
-                        <h2 class="m-b-20"> <span data-plugin="counterup"><?php echo $reservations_revenue; ?></span></h2>
+                        <h2 class="m-b-20"> <span data-plugin="counterup"><?php echo $reservations; ?></span></h2>
                     </div>
                 </div>
 
@@ -53,7 +53,7 @@ require_once('../partials/head.php');
                     <div class="card-box tilebox-one">
                         <i class="zmdi zmdi-money-box float-right text-muted"></i>
                         <h6 class="text-muted text-uppercase m-b-20">My Reservations Payments</h6>
-                        <h2 class="m-b-20">Ksh <span data-plugin="counterup"><?php echo $reservations; ?></span></h2>
+                        <h2 class="m-b-20">Ksh <span data-plugin="counterup"><?php echo $reservations_revenue; ?></span></h2>
                     </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@ require_once('../partials/head.php');
                                     $res = $stmt->get_result();
                                     while ($resev = $res->fetch_object()) { ?>
                                         <tr>
-                                            <th class="text-muted"><?php echo $resev->code; ?></th>
+                                            <th class="text-success"><?php echo $resev->code; ?></th>
                                             <td><?php echo $resev->car_regno; ?></td>
                                             <td><?php echo $resev->lot_number; ?></td>
                                             <td><?php echo $resev->parking_duration; ?> Hours</td>
@@ -105,7 +105,7 @@ require_once('../partials/head.php');
                                 <thead>
                                     <tr>
                                         <th>Code</th>
-                                        <th>Amount Paid</th>
+                                        <th>Amount</th>
                                         <th>Paid On</th>
                                     </tr>
                                 </thead>
@@ -119,8 +119,8 @@ require_once('../partials/head.php');
                                     while ($pay = $res->fetch_object()) { ?>
                                         <tr>
                                             <th><span class="badge bg-success"> <?php echo $pay->code; ?> </span></th>
-                                            <td><?php echo $pay->amt; ?></td>
-                                            <td><span class="badge badge-success"><?php echo date('d M Y g:ia', strtotime($pay->created_at)); ?></span></td>
+                                            <td>Ksh <?php echo $pay->amt; ?></td>
+                                            <td><?php echo date('d M Y g:ia', strtotime($pay->created_at)); ?></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>

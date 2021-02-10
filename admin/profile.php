@@ -176,7 +176,7 @@ require_once("../partials/head.php");
                         <div class="card-box">
                             <form method="POST">
                                 <div class="info">
-                                    <h5 class="">Update Profile</h5>
+                                    <h5 class="">Update Password</h5>
                                     <div class="row">
                                         <div class="col-md-11 mx-auto">
                                             <div class="row">

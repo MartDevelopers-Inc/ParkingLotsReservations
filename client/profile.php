@@ -10,18 +10,25 @@ if (isset($_POST['update_profile'])) {
     //Error Handling and prevention of posting double entries
     $error = 0;
 
-    if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
-        $id = mysqli_real_escape_string($mysqli, trim($_SESSION['id']));
+    if (isset($_POST['id']) && !empty($_POST['id'])) {
+        $id = mysqli_real_escape_string($mysqli, trim($_POST['id']));
     } else {
         $error = 1;
         $err = 'ID Cannot Be Empty';
     }
 
-    if (isset($_POST['username']) && !empty($_POST['username'])) {
-        $username = mysqli_real_escape_string($mysqli, trim($_POST['username']));
+    if (isset($_POST['name']) && !empty($_POST['name'])) {
+        $name = mysqli_real_escape_string($mysqli, trim($_POST['name']));
     } else {
         $error = 1;
-        $err = 'UserName Cannot Be Empty';
+        $err = 'Client Name Cannot Be Empty';
+    }
+
+    if (isset($_POST['phone']) && !empty($_POST['phone'])) {
+        $phone = mysqli_real_escape_string($mysqli, trim($_POST['phone']));
+    } else {
+        $error = 1;
+        $err = 'Phone Number Cannot Be Empty';
     }
 
     if (isset($_POST['email']) && !empty($_POST['email'])) {
@@ -31,19 +38,29 @@ if (isset($_POST['update_profile'])) {
         $err = 'Email  Cannot Be Empty';
     }
 
+    if (isset($_POST['car_regno']) && !empty($_POST['car_regno'])) {
+        $car_regno = mysqli_real_escape_string($mysqli, trim($_POST['car_regno']));
+    } else {
+        $error = 1;
+        $err = 'Car Registration Number Be Empty';
+    }
+
+
     if (!$error) {
-        $query = 'UPDATE admin  SET username =?, email =? WHERE id =?';
+        $query = 'UPDATE clients SET  name =?, phone =?, email =?,  car_regno =? WHERE id = ?';
         $stmt = $mysqli->prepare($query);
         $rc = $stmt->bind_param(
-            'sss',
-            $username,
+            'sssss',
+            $name,
+            $phone,
             $email,
+            $car_regno,
             $id
         );
         $stmt->execute();
         if ($stmt) {
             $success =
-                'Profile Updated' && header('refresh:1; url=profile.php');
+                'Client Account Updated' && header('refresh:1; url=profile.php');
         } else {
             $info = 'Please Try Again Or Try Later';
         }
@@ -81,7 +98,7 @@ if (isset($_POST['change_password'])) {
     }
 
     if (!$error) {
-        $sql = "SELECT * FROM  admin  WHERE id = '$id'";
+        $sql = "SELECT * FROM  clients  WHERE id = '$id'";
         $res = mysqli_query($mysqli, $sql);
         if (mysqli_num_rows($res) > 0) {
             $row = mysqli_fetch_assoc($res);
@@ -90,7 +107,7 @@ if (isset($_POST['change_password'])) {
             } elseif ($new_password != $confirm_password) {
                 $err = "Confirmation Password Does Not Match";
             } else {
-                $query = "UPDATE admin SET  password =? WHERE id =?";
+                $query = "UPDATE client SET  password =? WHERE id =?";
                 $stmt = $mysqli->prepare($query);
                 $rc = $stmt->bind_param('ss', $new_password, $id);
                 $stmt->execute();
@@ -110,13 +127,13 @@ require_once("../partials/head.php");
 
     <!-- Navigation Bar-->
     <?php
-    require_once('../partials/admin_nav.php');
+    require_once('../partials/client_nav.php');
     $id = $_SESSION['id'];
-    $ret = "SELECT * FROM `admin` WHERE id ='$id' ";
+    $ret = "SELECT * FROM `clients` WHERE id ='$id' ";
     $stmt = $mysqli->prepare($ret);
     $stmt->execute(); //ok
     $res = $stmt->get_result();
-    while ($admin = $res->fetch_object()) {
+    while ($client = $res->fetch_object()) {
     ?>
         <!-- End Navigation Bar-->
         <!-- ============================================================== -->
@@ -146,19 +163,23 @@ require_once("../partials/head.php");
                                     <div class="row">
                                         <div class="col-md-11 mx-auto">
                                             <div class="row">
-
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="address">Username</label>
-                                                        <input type="text" value="<?php echo $admin->username; ?>" name="username" class="form-control mb-4">
-                                                    </div>
+                                                <!-- Hide This -->
+                                                <input type="hidden" required name="id" value="<?php echo $client->id; ?>" class="form-control">
+                                                <div class="form-group col-md-12">
+                                                    <label for="">Name</label>
+                                                    <input type="text" required name="name" value="<?php echo $client->name; ?>" class="form-control">
                                                 </div>
-
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="address">Email</label>
-                                                        <input type="email" value="<?php echo $admin->email; ?>" name="email" class="form-control mb-4">
-                                                    </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="">Phone Number</label>
+                                                    <input type="text" required value="<?php echo $client->phone; ?>" name="phone" value="" class="form-control">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="">Email</label>
+                                                    <input type="text" required value="<?php echo $client->email; ?>" name="email" class="form-control">
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label for="">Car Registration Number</label>
+                                                    <input type="text" value="<?php echo $client->car_regno; ?>" required name="car_regno" class="form-control">
                                                 </div>
                                             </div>
                                             <br>
@@ -176,7 +197,7 @@ require_once("../partials/head.php");
                         <div class="card-box">
                             <form method="POST">
                                 <div class="info">
-                                    <h5 class="">Update Profile</h5>
+                                    <h5 class="">Change Password</h5>
                                     <div class="row">
                                         <div class="col-md-11 mx-auto">
                                             <div class="row">
