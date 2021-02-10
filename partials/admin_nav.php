@@ -39,7 +39,7 @@ while ($logged_in_user = $res->fetch_object()) {
 
                         <li class="list-inline-item dropdown notification-list">
                             <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <img src="../public/uploads/sys_logo/logo.png" alt="user" class="rounded-circle">
+                                <img src="../public/uploads/sys_logo/admin.svg" alt="user" class="rounded-circle">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right profile-dropdown " aria-labelledby="Preview">
                                 <!-- item-->
@@ -51,7 +51,6 @@ while ($logged_in_user = $res->fetch_object()) {
                                 <a href="profile.php" class="dropdown-item notify-item">
                                     <i class="zmdi zmdi-account-circle"></i> <span>Profile</span>
                                 </a>
-
 
                                 <!-- item-->
                                 <a href="logout.php" class="dropdown-item notify-item">

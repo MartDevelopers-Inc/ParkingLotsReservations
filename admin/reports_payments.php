@@ -5,7 +5,6 @@ require_once('../config/checklogin.php');
 admin();
 include('../config/codeGen.php');
 
-
 require_once("../partials/head.php");
 ?>
 
