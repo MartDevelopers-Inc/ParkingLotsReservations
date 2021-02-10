@@ -70,11 +70,13 @@ require_once('../partials/head.php');
                         </div>
 
                         <div class="form-group row m-t-30 mb-0">
-                            <div class="col-12">
+                            <div class="col-9">
                                 <a href="reset_password.php" class="text-muted"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
                             </div>
+                            <div class="col-3">
+                                <a href="../" class="text-muted"><i class="fa fa-home m-r-5"></i> Home</a>
+                            </div>
                         </div>
-
 
                     </form>
 

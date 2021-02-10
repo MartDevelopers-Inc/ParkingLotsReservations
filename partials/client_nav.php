@@ -14,7 +14,7 @@ while ($logged_in_user = $res->fetch_object()) {
                 <div class="topbar-left">
                     <a href="dashboard.php" class="logo">
                         <i class="fa fa-car icon-c-logo"></i>
-                        <span>CPRMS</span>
+                        <span>CPRS</span>
                     </a>
                 </div>
                 <!-- End Logo container-->
