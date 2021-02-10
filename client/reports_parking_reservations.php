@@ -2,16 +2,15 @@
 session_start();
 include('../config/config.php');
 require_once('../config/checklogin.php');
-admin();
+client();
 include('../config/codeGen.php');
-
 require_once("../partials/head.php");
 ?>
 
 <body>
 
     <!-- Navigation Bar-->
-    <?php require_once('../partials/admin_nav.php'); ?>
+    <?php require_once('../partials/client_nav.php'); ?>
     <!-- End Navigation Bar-->
 
 
@@ -27,10 +26,11 @@ require_once("../partials/head.php");
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
                         </div>
-                        <h4 class="page-title">Reservations Payments Reports</h4>
+                        <h4 class="page-title">My Recent Reservations Reports</h4>
                     </div>
                 </div>
             </div>
+            <!-- End Modal -->
 
             <!-- end row -->
             <div class="row">
@@ -39,28 +39,33 @@ require_once("../partials/head.php");
                         <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Payment Code</th>
-                                    <th>Parking Fee</th>
-                                    <th>Client Name</th>
-                                    <th>Phone No</th>
-                                    <th>Date Paid</th>
+                                    <th>My Name</th>
+                                    <th>My Phone No</th>
+                                    <th>Car Regno</th>
+                                    <th>Lot No</th>
+                                    <th>Fee</th>
+                                    <th>Parking Duration</th>
+                                    <th>Date </th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <?php
-                                $ret = 'SELECT * FROM `payments` ';
+                                $phone = $_SESSION['phone'];
+                                $ret = "SELECT * FROM `reservations` WHERE client_phone = '$phone' ";
                                 $stmt = $mysqli->prepare($ret);
                                 $stmt->execute(); //ok
                                 $res = $stmt->get_result();
-                                while ($pay = $res->fetch_object()) { ?>
+                                while ($reserv = $res->fetch_object()) { ?>
                                     <tr>
-                                        <td><?php echo $pay->code; ?></td>
-                                        <td>Ksh <?php echo $pay->amt; ?></td>
-                                        <td><?php echo $pay->client_name; ?></td>
-                                        <td><?php echo $pay->client_phone; ?></td>
-                                        <td><?php echo date('d M Y g:ia', strtotime($pay->created_at)); ?></td>
-                                       
+                                        <td><?php echo $reserv->client_name; ?></td>
+                                        <td><?php echo $reserv->client_phone; ?></td>
+                                        <td><?php echo $reserv->car_regno; ?></td>
+                                        <td><?php echo $reserv->lot_number; ?></td>
+                                        <td>Ksh <?php echo $reserv->amt; ?></td>
+                                        <td><?php echo $reserv->parking_duration; ?> Hours</td>
+                                        <td><?php echo $reserv->parking_date; ?></td>
+
                                     </tr>
                                 <?php } ?>
 
@@ -70,12 +75,9 @@ require_once("../partials/head.php");
                 </div>
             </div> <!-- end row -->
         </div> <!-- container -->
-
-
         <!-- Footer -->
         <?php require_once("../partials/footer.php"); ?>
         <!-- End Footer -->
-
 
     </div>
     <!-- End wrapper -->

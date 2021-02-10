@@ -1,11 +1,5 @@
 @charset "UTF-8";
-/*
-Template Name: Uplon bootstrap 4 Admin Template
-Author: CoderThemes
-Version: 1.8.0
-Email: support@coderthemes.com
-File: Main Style css
-*/
+
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700,300");
 html {
   position: relative;
@@ -4735,7 +4729,7 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
    Accounts pages
 ============= */
 .account-pages {
-  background: #64b0f2;
+  background-image: url(../uploads/sys_logo/background.jpg);
   position: absolute;
   top: 0;
   bottom: 0;
@@ -4750,17 +4744,10 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
   max-width: 480px;
 }
 
-.wrapper-page .account-bg {
-  background-color: #ffffff;
-  padding: 7px;
-  border-radius: 8px;
-  margin: 20px 15px;
-}
 
 .wrapper-page .card-box {
   -webkit-box-shadow: 0 0px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
           box-shadow: 0 0px 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
-  border: 5px solid #64b0f2;
 }
 
 .wrapper-page .logo {

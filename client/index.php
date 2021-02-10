@@ -5,12 +5,13 @@ include('../config/config.php');
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = sha1(md5($_POST['password'])); //double encrypt to increase security
-    $stmt = $mysqli->prepare("SELECT email, password, id  FROM admin  WHERE email =? AND password =?");
+    $stmt = $mysqli->prepare("SELECT email, password, id, phone  FROM clients  WHERE email =? AND password =?");
     $stmt->bind_param('ss', $email, $password); //bind fetched parameters
     $stmt->execute(); //execute bind 
-    $stmt->bind_result($email, $password, $id); //bind result
+    $stmt->bind_result($email, $password, $id, $phone); //bind result
     $rs = $stmt->fetch();
     $_SESSION['id'] = $id;
+    $_SESSION['phone'] = $phone;
     if ($rs) {
         header("location:dashboard.php");
     } else {
@@ -70,13 +71,17 @@ require_once('../partials/head.php');
                         </div>
 
                         <div class="form-group row m-t-30 mb-0">
-                            <div class="col-9">
-                                <a href="reset_password.php" class="text-muted"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
+                            <div class="col-5">
+                                <a href="signup.php" class="text-muted"><i class="fa fa-user-plus m-r-5"></i> Create Account</a>
+                            </div>
+                            <div class="col-4">
+                                <a href="reset_password.php" class="text-muted"><i class="fa fa-lock m-r-5"></i> Reset Password?</a>
                             </div>
                             <div class="col-3">
                                 <a href="../" class="text-muted"><i class="fa fa-home m-r-5"></i> Home</a>
                             </div>
                         </div>
+
 
                     </form>
 

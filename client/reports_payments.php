@@ -2,7 +2,7 @@
 session_start();
 include('../config/config.php');
 require_once('../config/checklogin.php');
-admin();
+client();
 include('../config/codeGen.php');
 
 require_once("../partials/head.php");
@@ -11,7 +11,7 @@ require_once("../partials/head.php");
 <body>
 
     <!-- Navigation Bar-->
-    <?php require_once('../partials/admin_nav.php'); ?>
+    <?php require_once('../partials/client_nav.php'); ?>
     <!-- End Navigation Bar-->
 
 
@@ -27,7 +27,7 @@ require_once("../partials/head.php");
                     <div class="page-title-box">
                         <div class="btn-group float-right m-t-15">
                         </div>
-                        <h4 class="page-title">Reservations Payments Reports</h4>
+                        <h4 class="page-title">My Reservations Payments Reports</h4>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,8 @@ require_once("../partials/head.php");
 
                             <tbody>
                                 <?php
-                                $ret = 'SELECT * FROM `payments` ';
+                                $phone = $_SESSION['phone'];
+                                $ret = "SELECT * FROM `payments` WHERE client_phone = '$phone' ";
                                 $stmt = $mysqli->prepare($ret);
                                 $stmt->execute(); //ok
                                 $res = $stmt->get_result();
@@ -60,7 +61,6 @@ require_once("../partials/head.php");
                                         <td><?php echo $pay->client_name; ?></td>
                                         <td><?php echo $pay->client_phone; ?></td>
                                         <td><?php echo date('d M Y g:ia', strtotime($pay->created_at)); ?></td>
-                                       
                                     </tr>
                                 <?php } ?>
 
