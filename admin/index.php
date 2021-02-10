@@ -30,7 +30,7 @@ require_once('../partials/head.php');
             <div class="card-box mb-0">
                 <div class="text-center m-t-20">
                     <a href="index.php" class="logo">
-                        <span>Parking Lots Reservations </span>
+                        <span>Car Parking Reservations System</span>
                     </a>
                 </div>
                 <div class="m-t-10 p-20">
